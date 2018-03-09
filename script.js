@@ -1,49 +1,50 @@
 var pic = document.getElementById("a");
-var clear = document.getElementById("clear");
-var 
-var circleObj{
-    c1 : document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c1.addEventListener("click", colorRandom, true);
-    setX : function(x){
-	c1.setAttribute('cx', x);
-    }
-    setY : function(y){
-	c1.setAttribute('cy',y);
-    }
-    setR : function(r){
-	c1.setAttribute('cr', r);
-    }
-    setColor : function(c){
-	c1.setAttribute('fill', c);
-    }
-    
-    
+var clearbut = document.getElementById("clear");
+
+var circleObj = function (x, y, r, fill){
+    var circ =  {
+	cx : x,
+	cy : y,
+	cr : r,
+	cfill : fill, 
+	randColor : function(e) {
+	    this.setAttribute("fill", "FF0000");
+	    e.stopPropogation();
+	    this.addEventListener("click", this.remove);
+	    
+    },
+	remove : function(e){
+	    pic.remove(this);
+	    e.stopPropogation();
+	},
+	draw : function(){
+	    var c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+	    c1.setAttribute('cx', this.cx);
+	    c1.setAttribute('cy', this.cy);
+	    c1.setAttribute('fill', "black");
+	    c1.setAttribute('cr', "10");
+	    console.log('append');
+	    return c1;
+	}
+    };
+    return circ;
 }
 
-var colorRandom = function(e){
-  if (this.getAttribute("fill") === "blue"){
-    this.setAttribute("fill", "red");
-    e.stopPropagation();
-  }
-  else{
-    pic.removeChild(this);
-    e.stopPropagation();
-    x = Math.floor(Math.random() * 501);
-    y = Math.floor(Math.random() * 501);
-    var c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-    c1.setAttribute("cx", x);
-    c1.setAttribute("cy", y);
-    c1.setAttribute("r", 10);
-    c1.setAttribute("fill", "blue");
-    pic.appendChild(c1);
-    c1.addEventListener("click", colorRandom, true);
-  }
+var clear = function(e){
+    pic.innerHTML = "";
 }
 
-
-var toClear = function(e){
-  pic.innerHTML = '';
+var create = function(e){
+    var rect = pic.getBoundingClientRect();
+    var x = e.offsetX;
+    console.log(x);
+    var y = e.offsetY;
+    console.log(y);
+    var circ = circleObj(x,y,10,"lightsteelblue");
+    var rcir = circ.draw();
+    pic.appendChild(rcir);
+    rcir.addEventListener('click', this.randColor);
 }
 
-pic.addEventListener("click", createCircle);
-clear.addEventListener("click", toClear);
+pic.addEventListener("click", create);
+clearbut.addEventListener("click", clear);
